@@ -1,0 +1,262 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section headerScripts {
+    <script>
+        $(document).ready(function () {
+            menuname = 'Supplier Registration';
+        });
+    </script>
+}
+
+
+<div class="row">
+    <div class="col-md-10 ">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Supplier Registration</h3>
+            </div>
+            <div class="panel-body">
+                <form class="item-reg">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label " for="txtSupplierId">Supplier ID</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="txtSupplierId" disabled value="S21XXXXXX" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtSupplierName">Name<span class="star">*</span></label>
+                        <div class="col-sm-10">
+                            <!-- <input type="text" class="none" id="txtSupplierId" /> -->
+                            <input type="text" class="form-control focus" id="txtSupplierName" placeholder="Enter Supplier Name" maxlength="150" autofocus />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtContactNo">Mobile<span class="star">*</span></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control focus" id="txtContactNo" placeholder="Enter Contact No" maxlength="80" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtAddress">Address</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control focus" id="txtAddress" placeholder="Enter Address" maxlength="200" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtBankName">Bank Name</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="txtBankName" />
+                        </div>
+                        <label class="col-sm-2 control-label" for="txtBankAddress">BankAddress</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="txtBankAddress" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtAccountNo">AccountNo</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="txtAccountNo" />
+                        </div>
+                        <label class="col-sm-2 control-label" for="txtSwiftCode">SwiftCode</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="txtSwiftCode" />
+                        </div>
+                    </div>
+                    <!--  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="txtOpeningDue">DueBal</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control focus" id="txtOpeningDue" placeholder="Enter Openig Due" maxlength="8" />
+                    </div>
+                </div> -->
+
+                    <div class="col-sm-12 text-right">
+                        <input type="button" class="btn btn-sm btn-success" id="btnSave" value="Save" onclick="Save()" />
+                        <button type="button" class="btn btn-sm btn-info" id="invList">Supplier List</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row list-area">
+    <div class="col-md-12">
+        <div class="panel">
+            @*<div class="panel-heading">
+                    <h3 class="panel-title">Supplier List</h3>
+                </div>*@
+            <div class="panel-body">
+                <table class="table table-bordered table-striped table-hover" id="table-example">
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function loadData() {
+        $("#table-example").DataTable({
+            searching: true,
+            destroy: true,
+            bAutoWidth: false,
+            "ajax": {
+                url: '@Url.Action("GetSupplierList", "InvSupplierRegister")',
+                type: "GET",
+                datatype: "json",
+                data: { 'param': 0, 'searchString': 0 },
+            },
+            "columns": [
+                { "data": "Id", "title": "Id", visible: false },
+                { "data": "SupplierId", "title": "SupplierId" },
+                { "data": "Name", "title": "Name" },
+                { "data": "MobileNo", "title": "MobileNo" },
+                { "data": "AccountNo", "title": "AccountNo" },
+
+                {
+                    "data": "Id", "title": "Edit",
+                    "render": function (data) {
+                        return "<a href='javascript:;' class='md-trigger' onclick='return GetProductDetailsById(" + data + ")'><span class='glyphicon glyphicon-edit'></span></a>";
+                    },
+                    visible: true
+                },
+                {
+                    "data": "Id", "title": "X",
+                    "render": function (data) {
+                        return "<a href='javascript:;' class='delete' onclick='Delete(" + data + ")'><span class='glyphicon glyphicon-trash'></span></a>";
+                    },
+                    visible: true
+                }
+            ]
+        });
+    }
+    function GetSupplierDetailsById(param) {
+        $.ajax({
+            url: '@Url.Action("GetSupplierList", "InvSupplierRegister")',
+            type: "GET",
+            datatype: "json",
+            data: { 'param': param, 'searchstring': 0 },
+            success: function (data) {
+                $('#txtId').val(data.data[0].Id),
+                $('#txtSupplierId').val(data.data[0].SupplierId),
+                $('#txtSupplierName').val(data.data[0].Name),
+                $('#txtContactNo').val(data.data[0].MobileNo),
+                $('#txtAddress').val(data.data[0].Address),
+                $('#txtBankName').val(data.data[0].BankName),
+                $('#txtBankAddress').val(data.data[0].BankAddress),
+                $('#txtAccountNo').val(data.data[0].AccountNo),
+                $('#txtSwiftCode').val(data.data[0].txtSwiftCode),
+                $('#btnSave').val("Update");
+            },
+            error: function (errormessage) { alert(errormessage.responseText); }
+        });
+    }
+
+    @*function getsupplierdetailsbyid(param) {
+        $.ajax({
+            type: "get",
+            url: '@url.action("getsupplierlist", "invsupplierregister")',
+            datatype: "json",
+            data: { 'param': param },
+            success: function (data) {
+                $("#txtsuppliername").val(data.data[0].suppliername);
+                $("#txtcontactno").val(data.data[0].mobileno);
+                $("#txtaddress").val(data.data[0].address);
+                $("#txtsupplierid").val(data.data[0].supplierid);
+                $("#txtbankname").val(data.data[0].bankname);
+                $("#txtbankaddress").val(data.data[0].bankaddress);
+                $("#txtaccountno").val(data.data[0].accountno);
+                $("#txtswiftcode").val(data.data[0].swiftcode);
+              //  $("#txtopeningdue").val(data.data[0].openingdue);
+                $("#btnsave").val("update");
+            }
+        });
+    }*@
+
+    @*function deletesupplierdetailsbyid(param) {
+        var r = confirm("are you sure!");
+        if (r == true) {
+            $.ajax({
+                type: "get",
+                url: '@url.action("deletesupplier", "supplier")',
+                datatype: "json",
+                data: { 'param': param },
+                success: function (data) {
+                    alert(data);
+                    location.reload();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responsetext);
+                }
+            });
+        }
+    }*@
+
+    function Save() {
+        var res = validation();
+        if (res == true) {
+            var voucher = {
+                SupplierId: $("#txtSupplierId").val(),
+                Name: $("#txtSupplierName").val(),
+                MobileNo: $("#txtContactNo").val(),
+                Address: $("#txtAddress").val(),
+                BankName: $("#txtBankName").val(),
+                BankAddress: $("#txtBankAddress").val(),
+                AccountNo: $("#txtAccountNo").val(),
+                SwiftCode: $("#txtSwiftCode").val(),
+                //  OpeningDue: $("#txtOpeningDue").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Save", "InvSupplierRegister")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(voucher),
+                success: function (data) {
+                    alert(data);
+                    if ((data == "Save Successful") || (data == "Update Successful")) {
+                        location.reload(true);
+                    }
+                }
+            });
+
+            return false;
+        }
+        else {
+            alert("Please fill required field");
+        }
+        return false;
+    }
+    function validation() {
+        var isValid = true;
+        if ($("#txtSupplierName").val() == '') { $('#txtSupplierName').css('border-color', 'red'); isValid = false; }
+        else { $('#txtSupplierName').css('border-color', 'lightgrey'); }
+        if ($("#txtContactNo").val() == '') { $('#txtContactNo').css('border-color', 'red'); isValid = false; }
+        else { $('#txtContactNo').css('border-color', 'lightgrey'); }
+        if ($('#txtAddress').val() == '') { $('#txtAddress').val('N/A'); }
+        //  if ($('#txtOpeningDue').val() == '') { $('#txtOpeningDue').val(0); }
+
+        return isValid;
+    }
+    @*function GetModelById() {
+        $.ajax({
+            url: '@Url.Action("GetItemList", "Item")',
+            type: "GET",
+            datatype: "json",
+            data: { 'param': $("#txtItemId").val() },
+            success: function (data) {
+                $('#txtModel').val(data.data[0].Model);
+            },
+            error: function (errormessage) { alert(errormessage.responseText); }
+        });
+    }*@
+
+
+</script>
+

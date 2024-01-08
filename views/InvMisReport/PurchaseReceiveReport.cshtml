@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "PurchaseReceiveReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model dynamic
+
+@section headerScripts {
+    <script>
+        $(document).ready(function () {
+            menuname = 'Purchase Receive Report';
+        });
+    </script>
+}
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Purchase Receive Report</h3>
+            </div>
+            <div class="panel-body">
+                <form class="item-reg">
+                    <div class="form-group">
+                        <label class="col-sm-offset-2 col-sm-2 control-label" >Date From</label>
+                        <div class="col-sm-2"><input type="text" class="form-control datepicker" id="txtDateFrom" /></div>
+                        <label class="col-sm-2 control-label" >Date To</label>
+                        <div class="col-sm-2"><input type="text" class="form-control datepicker" id="txtDateTo" /></div>
+                    </div>
+                    @*<div class="form-group">
+                            <label class="col-sm-offset-2 col-sm-2 control-label" for="txtSupplierId">Supplier Name</label>
+                            <div class="col-sm-6">
+                                <select class="form-control select2" id="txtSupplierId" name="txtSupplierId">
+                                    @{
+                                        <option value="0">---Select---</option>
+                                        foreach (var alist in @ViewBag.SupplierList)
+                                        {
+                                            <option value=@alist.SupplierId> @alist.SupplierName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>*@
+
+ 
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-body mis-report">
+                <div class="form-group col-sm-offset-2 col-sm-8">
+                    <div class="col-sm-offset-2 col-sm-8"><button type="button" class="btn btn-danger" onclick="GetReport('Product Receiving Report');">Product Receiving Report</button></div>
+                    <div class="col-sm-offset-2 col-sm-8"><button type="button" class="btn btn-danger" onclick="GetReport('Product Name Wise Summarized');">Product Name Wise Summarized</button></div>
+                    <div class="col-sm-offset-2 col-sm-8"><button type="button" class="btn btn-danger" onclick="GetReport('Company Name Wise Summarized');">Company Name Wise Summarized</button></div>
+                    <div class="col-sm-offset-2 col-sm-8"><button type="button" class="btn btn-danger" onclick="GetReport('Product Receive Report (Category Wise)');">Category Wise Summarized</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function GetReport(reportNameSales) {
+        var vc = {
+            DateTo: $("#txtDateTo").val(),
+            DateFrom: $("#txtDateFrom").val(),
+            ReportFileName: reportNameSales,
+
+    };
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Index", "InvMisReport")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(vc),
+            success: function(data) {
+                var popupWindow = window.open("/Report/ReportViewer/ReportViewer.aspx");
+                $(document).ready(function (e) {
+                    detectPopup();
+                    function detectPopup() {
+                        if (!popupWindow) {
+                            alert("Popups blocked!!! Please Enable from Your Browser Setting Ex: Chrome->Advanced Settings->Content Settings->Popups' ");
+                            return false;
+                        } else {
+                            window.open('', '_self');
+                        }
+                    }
+                });
+        
+
+            }
+        });
+    }
+
+</script>
+
+

@@ -1,0 +1,325 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Stock Adjust</h3>
+                
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    <label class="col-sm-2 " for="txtTrReqNo">Transaction No.</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control " id="txtTrReqNo" disabled value="T21XXXXXXX" />
+
+                    </div>
+
+                    <label class="col-sm-2 control-label" for="txtTrReqDate"> Transaction Req. Date</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control datepicker" id="txtTrReqDate" maxlength="100" />
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 " for="txtUpdatedBy">Updated By</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="txtUpdatedBy" disabled value="@System.Web.HttpContext.Current.Session["UserName"]" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 " for="txtProductCode">Product Code</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control " id="txtProductCode" />
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-info btn-blue" id="btnShow" onclick="Show()">Show</button>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group ">
+                    <div class="form-group">
+                        <table class="table entry-form">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-1">Product Name</th>
+                                    <th class="col-sm-1">ProductId</th>
+                                    <th class="col-sm-1">Unit</th>
+                                    <th class="col-sm-1">BatchNo</th>
+                                    <th class="col-sm-1">Current Qty</th>
+                                    <th class="col-sm-1">Corrected Qty</th>
+                                    <th class="col-sm-1">Balance InQty</th>
+                                    <th class="col-sm-1">Balance OutQty</th>
+                                </tr>
+                                @*<tr>
+                                    <td class="col-sm-2"><input class="form-control" id="txtProductName" type="text"></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtProductNo" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtUnit" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtBatchNo" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtCurrentQty" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtCorrectedQty" type="text" ></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtBalanceQty" type="text" ></td>
+                                    <td><button type="button" class="btn btn-sm btn-blue" id="btnAdd" onclick="Add()">Add</button></td>
+                                </tr>*@
+                            </thead>
+
+                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead>
+
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                @*<div class="form-group">
+                    <label class="col-sm-10 control-label" for="txtTotal">Total</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="txtTotal" value="0" />
+                    </div>
+                </div>*@
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="txtNote">Note</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control " id="txtNote" />
+                    </div>
+
+                </div>
+                <div class="form-group text-center">
+                    <input type="button" class="btn btn-sm btn-success" id="btnSave" value="Save" onclick="Save()" />
+                    @*<button type="button" class="btn btn-sm btn-info" id="invList">Purchase Receiving Form lists </button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row list-area">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input type="text" id="dataTableSearch" class="form-control" placeholder="Search" />
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped table-hover" id="table-example"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on('keyup', '#dataTableSearch', function () {
+        loadData();
+    });
+    function loadData() {
+        $("#table-example").DataTable({
+            searching: false,
+            destroy: true,
+            bAutoWidth: false,
+            lengthChange: false,
+            "ajax": {
+                url: '@Url.Action("GetInvList", "InvPurchaseOrder")',
+                type: "GET",
+                datatype: "json",
+                data: { 'param': 0, 'searchString': $('#dataTableSearch').val() },
+            },
+            "columns": [
+                { "data": "ReqNo", "title": "ReqNo" },
+                { "data": "ReqDate", "title": "ReqDate", "render": function (data) { return (window.ToJavaScriptDate(data)); } },
+                { "data": "PoNo", "title": "PoNo" },
+                { "data": "PoDate", "title": "PoDate", "render": function (data) { return (window.ToJavaScriptDate(data)); } },
+                { "data": "SupplierName", "title": "SupplierName" },
+                { "data": "PoFor", "title": "PoFor" },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return GetInvoicePrint(\"" + data.ReqNo + "\",\"" + ToJavaScriptDate(data.ReqDate) + "\")'><span class='glyphicon glyphicon-print'></span></a>";
+                    }, "title": "Print"
+                },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return DeleteInvoice(\"" + data.ReqNo + "\",\"" + ToJavaScriptDate(data.ReqDate) + "\")'><span class='glyphicon glyphicon-trash'></span></a>";
+                    }, "title": "X", visible: true
+                }
+            ],
+        });
+    }
+
+
+    $(document).ready(function () {
+        $(document).on("keyup", ".currentQty, .CorrectedQty", updateTotal);
+        $('#txtProductCode').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetProduct", "InvStockAdjust")',
+                    dataType: "Json",
+                    data: { 'param': 0, 'searchString': $("#txtProductCode").val(), 'category': '' },
+                    success: function (data) {
+                        response(data.data.slice(0, 10));
+
+                    }
+                });
+            },
+            select: function (event, ui) {
+
+                $('#tbody').empty();
+                $("#txtProductCode").val(ui.item.ProductCode)
+                return false;
+            },
+            minLength: 2
+        }).data("ui-autocomplete")._renderItem = function (ui, item) {
+            if (ui.children().length === 0) {
+                $("<thead><tr><th>Product Code</th><th>Product Name</th></tr></thead>").appendTo(ui);
+            }
+            var html = "<td>" + item.ProductCode + "</td>";
+            html += "<td>" + item.ProductName + "</td>";
+            return $("<tr></tr>").append(html).appendTo(ui);
+        };
+    })
+
+    function Show() {
+        $("table #tbody").empty();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetProductList", "InvStockAdjust")',
+            dataType: "Json",
+            data: { 'param': '', 'searchString': $("#txtProductCode").val(), 'lastIssue': '' },
+            success: function (data) {
+                $.each(data.data, function (key, item) {
+                    var rows = "<tr>"
+                      + "<td class='col-sm-1'>" + item.ProductName + "</td>"
+                      + "<td class='col-sm-1'>" + item.ProductCode + "</td>"
+                      + "<td class='col-sm-1'>" + item.Unit + "</td>"
+                      + "<td class='col-sm-1'>" + item.BatchNo + "</td>"
+                      + "<td class='col-sm-1'> <input class='currentQty' type='text'  value='" + item.CurrentQty + "' /></td>"
+                      + "<td class='col-sm-1'> <input class='CorrectedQty'  type='text' value='0' /></td>"
+                      + "<td class='col-sm-1'> <input class='BalancedInQty' type='text' value='0' /></td>"
+                      + "<td class='col-sm-1'> <input class='BalancedOutQty' type='text' value='0' /></td>"
+                      //+ "<td class='col-sm-1'><a href='#' class='deleteRow' onchange = 'validate()';><span class='glyphicon glyphicon-trash'></span></a></td>"
+                      + "</tr>";
+                    $('table #tbody').append(rows);
+                });
+
+            }
+        });
+
+    }
+
+    function gridValidation() {
+        $(".appQty").each(function () {
+            if (!isNaN(this.value) && this.value.length != 0) {
+                appqty = parseFloat($(this).closest("tr").find('.appQty').val());
+                reqQty = parseFloat($(this).closest("tr").find('.reqQty').val());
+                if (appqty > reqQty) {
+                    $(this).closest("tr").find('.appQty').val(0);
+                }
+            }
+        });
+    }
+    function updateTotal() {
+        $(".currentQty, .CorrectedQty").each(function () {
+
+            currentQty = parseFloat($(this).closest("tr").find('td:eq(4) input').val());
+            correctedQty = parseFloat($(this).closest("tr").find('td:eq(5) input').val());
+            if (Number(correctedQty) > Number(currentQty)) {
+                $(this).closest("tr").find('.BalancedInQty').val(correctedQty - currentQty);
+                $(this).closest("tr").find('.BalancedOutQty').val(0);
+            }
+            if (Number(correctedQty) <= Number(currentQty)) {
+                $(this).closest("tr").find('.BalancedOutQty').val(currentQty - correctedQty);
+            }
+
+            //$('#txtTotal').val(sumColumnValue(7));
+        });
+    }
+    
+    $("table #tbody").on("click", "a.deleteRow", function (event) {
+        event.preventDefault();
+        $(this).closest('tr').remove();
+        $(function () {
+            //updateTotal()
+        });
+        return false;
+    });
+
+       function Save() {
+        var valid = Validation();
+        //var valid1 = validate();
+        if (valid == true ) {
+            var vouchers = [];
+            var table = $('table #tbody');
+            table.find('tr').each(function () {
+                var $tds = $(this).find('td'),
+                    tName = $tds.eq(0).text(),
+                     tCode = $tds.eq(1).text(),
+                    tUnit = $tds.eq(2).text(),
+                    tBatchNo = $tds.eq(3).text(),
+                    tCurrentQty = $tds.eq(4).find('input').val(),
+                    tCorrectedQty = $tds.eq(5).find('input').val(),
+                    tBalancedInQty = $tds.eq(6).find('input').val(),
+                    tBalancedOutQty = $tds.eq(7).find('input').val();
+
+                    var voucher = {
+                        TrNo: $("#txtReqNo").val(),
+                        TrDate: $("#txtReqDate").val(),
+                        Note: $("#txtNote").val(),
+                        ProductCode: tCode,
+                        ProductName: tName,
+                        Unit: tUnit,
+                        BatchNo: tBatchNo,
+                        CurrentQty: tCurrentQty,
+                        CorrectedQty: tCorrectedQty,
+                        InQty: tBalancedInQty,
+                        OutQty: tBalancedOutQty,
+
+                };
+                    vouchers.push(voucher);
+                });
+                var json = { _aModel: vouchers };
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Save", "InvStockAdjust")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        if (data = 'Save Successful') {
+                            alert(data);
+                            location.reload(true);
+                        } else { alert(data); }
+                    }
+
+                });
+
+                return false;
+            }
+        else {
+            alert("Please fill required field");
+        }
+        return false;
+    }
+
+
+    function Validation() {
+            var isValid = true;
+            if ($('#txtLastIssueFor').val() == "") { $('#txtLastIssueFor').css('border-color', 'red'); isValid = false; }
+            else { $('#txtLastIssueFor').css('border-color', 'lightgrey'); }
+            if ($('#txtNextIssueFor').val() == "") { $('#txtNextIssueFor').css('border-color', 'red'); isValid = false; }
+            else { $('#txtNextIssueFor').css('border-color', 'lightgrey'); }
+            if ($('#txtIssueTo').val() == "") { $('#txtIssueTo').css('border-color', 'red'); isValid = false; }
+            else { $('#txtIssueTo').css('border-color', 'lightgrey'); }
+            if ($('#tbody').html() == '') { alert('Please add an item to table grid.'); isValid = false; }
+            if ($('#tbody').html() == '') { alert('Please add an item to table grid.'); isValid = false; }
+            if ($("#txtNote").val() == '') { $('#txtNote').val("N/A"); }
+            return isValid;
+        }
+
+</script>

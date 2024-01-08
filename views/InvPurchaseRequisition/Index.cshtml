@@ -1,0 +1,379 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-sm-10">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Purchase Requisition</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label " for="txtReqNo">Req. No.</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="txtReqNo" disabled value="R21XXXXXX" />
+                    </div>
+                    <label class="col-sm-2 control-label" for="txtReqDate">Req. Date</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control datepicker" disabled id="txtReqDate" maxlength="100" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="txtReqtFrom">Req. From</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="txtReqFrom" disabled value="@System.Web.HttpContext.Current.Session["UserName"]" />
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                    <label class="col-sm-2 control-label" for="txtSupplier">Supplier Name</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="txtSupplier">
+                            @{
+                                <option value="0">---Select---</option>
+                                foreach (var alist in @ViewBag.MainCatList)
+                                {
+                                    <option value="@alist.Name">@alist.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>*@
+
+                <div class="form-group">
+                    <div class="form-group">
+                        <table class="table entry-form">
+                            <thead>
+                                <tr>
+                                    <th>ProductId</th>
+                                    <th>Product Name</th>
+                                    <th>Details</th>
+                                    <th>Unit</th>
+                                    @*<th>OurStock</th>*@
+                                    <th>Req.Qty</th>
+                                    <th>Exp.DeliveryDate</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="col-sm-1">
+                                        <input class="form-control" id="txtProductCode" type="text" tabindex="6">
+                                    </td>
+                                    <td class="col-sm-4"><input class="form-control" id="txtProductName" type="text" disabled></td>
+                                    <td class="col-sm-3"><input class="form-control" id="txtDetail" type="text"></td>
+                                    <td class="col-sm-2"><input class="form-control" id="txtUnit" type="text" disabled></td>
+                                    <td class="col-sm-1 none"><input class="form-control" id="txtInQty" type="text" disabled></td>
+                                    <td class="col-sm-2"><input class="form-control" id="txtRQty" type="text" tabindex="10"></td>
+                                    <td class="col-sm-1"><input class="form-control datepicker" id="txtExpDelDate" type="text" autocomplete="off"></td>
+                                    <td><button type="button" class="btn btn-sm btn-blue" id="btnAdd" onclick="Add()">Add</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-hover table-bordered">
+
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-10 control-label" for="txtTotalQty">Total</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="txtTotalQty" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 " for="txtNote">Note</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="txtNote" />
+                    </div>
+
+                </div>
+                <div class="form-group text-center">
+                    <input type="button" class="btn btn-sm btn-success" id="btnSave" value="Save" onclick="Save()" />
+                    <button type="button" class="btn btn-sm btn-info" id="invList">Requisation List</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row list-area">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input type="text" id="dataTableSearch" class="form-control" placeholder="Search" />
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped table-hover" id="table-example"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function GetReqDetailsById(param) {
+        $.ajax({
+            url: '@Url.Action("GetRequisitionList", "InvPurchaseRequisition")',
+            type: "GET",
+            datatype: "json",
+            data: { 'param': param, 'searchstring': 0, 'category': 0 },
+            success: function (data) {
+                console.log(data);
+                $('#txtId').val(data.data[0].Id),
+                $('#txtReqNo').val(data.data[0].ReqNo),
+                $('#txtReqDate').val(ToJavaScriptDate(data.data[0].ReqDate)).attr('disabled',true),
+                $('#txtReqtFrom').val(data.data[0].ReqFrom),
+                $('#txtNote').val(data.data[0].Note),
+                $('#btnSave').val("Update");
+                Show();
+            },
+            error: function (errormessage) { alert(errormessage.responseText); }
+        });
+    }
+    function Show() {
+        $("table #tbody").empty();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetEditProductList", "InvPurchaseRequisition")',
+            dataType: "Json",
+            data: { 'param': 0, 'searchString': $("#txtReqNo").val(), 'productcode': '' },
+            success: function (data) {
+                $.each(data.data, function (key, item) {
+                    var rows = "<tr>"
+                        + "<td class='col-sm-2'>" + item.ProductCode + "</td>"
+                        + "<td class='col-sm-2'>" + item.ProductName + "</td>"
+                        + "<td class='col-sm-2'>" + item.Details + "</td>"
+                        + "<td class='col-sm-2'>" + item.Unit + "</td>"
+                        + "<td class='col-sm-2'>" + item.ReqQty + "</td>"
+                        + "<td class='col-sm-2'>" + ToJavaScriptDate(item.ExDlDate) + "</td>"
+                        + "<td class='col-sm-1'><a href='#' class='deleteRow' onclick = 'deleterow()'><span class='glyphicon glyphicon-trash'></span></a></td>"
+                        + "</tr>";
+                    $('table #tbody').append(rows);
+                });
+
+            }
+        });
+
+    }
+    function Delete(param) {
+        var r = confirm("Are You Sure!");
+        if (r == true) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteProduct", "InvPurchaseRequisition")',
+                dataType: "Json",
+                data: { 'param': param },
+                success: function (data) {
+                    alert(data);
+                    location.reload();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+    $(document).on('keyup', '#dataTableSearch', function () {
+        loadData();
+    });
+    function loadData() {
+        $("#table-example").DataTable({
+            searching: false,
+            destroy: true,
+            bAutoWidth: false,
+            lengthChange: false,
+            "ajax": {
+                url: '@Url.Action("GetInvList", "InvPurchaseRequisition")',
+                type: "GET",
+                datatype: "json",
+                data: { 'param': 0, 'term': $('#dataTableSearch').val() },
+            },
+            "columns": [
+                { "data": "Id", "title": "Id", visible: false },
+                { "data": "ReqNo", "title": "ReqNo" },
+                { "data": "ReqDate", "title": "ReqDate", "render": function (data) { return (window.ToJavaScriptDate(data)); } },
+                { "data": "ReqFrom", "title": "ReqFrom" },
+                { "data": "TotalQty", "title": "TotalQty" },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return GetInvoicePrint(\"" + data.ReqNo + "\",\"" + ToJavaScriptDate(data.ReqDate) + "\")'><span class='glyphicon glyphicon-print'></span></a>";
+                    }, "title": "Print"
+                },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return GetReqDetailsById(\"" + data.ReqNo + "\",\"" + ToJavaScriptDate(data.ReqDate) + "\")'><span class='glyphicon glyphicon-edit'></span></a>";
+                    }, "title": "Edit", visible: true
+                },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;'  onclick='return Delete(\"" + data.ReqNo + "\")'><span class='glyphicon glyphicon-trash'></span></a>";
+                    }, "title": "X", visible: true
+                }
+            ],
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('#txtProductCode').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetProductList", "InvRequisition")',
+                    dataType: "Json",
+                    data: { 'param': 0, 'searchString': $("#txtProductCode").val() },
+                    success: function (data) {
+                        response(data.data.slice(0, 10));
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $("#txtProductCode").val(ui.item.ProductCode);
+                $("#txtProductName").val(ui.item.ProductName);
+                $("#txtUnit").val(ui.item.Unit);
+                //$("#txtOurStock").val(0);
+                $("#txtRQty").val(1).focus();
+                $("#txtDetail").val("N/A");
+                return false;
+            },
+            minLength: 2
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            if (ul.children().length === 0) {
+                $("<thead><tr><th>ItemCode</th><th>Name</th><th>UnitName</th></tr></thead>").appendTo(ul);
+            }
+            var html = "<td>" + item.ProductCode + "</td>";
+            html += "<td>" + item.ProductName + "</td>";
+            html += "<td>" + item.Unit + "</td>";
+            return $("<tr></tr>").append(html).appendTo(ul);
+        };
+    })
+
+
+    function Add() {
+        var ss = validate();
+        if (ss == false) {
+            return false;
+        }
+        var rows = "<tr>"
+        + "<td class='code col-sm-1'>" + $("#txtProductCode").val() + "</td>"
+        + "<td class='col-sm-4'>" + $("#txtProductName").val() + "</td>"
+        + "<td class='col-sm-2'>" + $("#txtDetail").val() + "</td>"
+        + "<td class='col-sm-2'>" + $("#txtUnit").val() + "</td>"
+        //+ "<td class='col-sm-1'>" + $("#txtOurStock").val() + "</td>"
+        + "<td class='col-sm-2'>" + $("#txtRQty").val() + "</td>"
+        + "<td class='col-sm-2'>" + $("#txtExpDelDate").val() + "</td>"
+        + "<td class='col-sm-1'><a href='#' class='deleteRow' onclick = 'deleterow()'><span class='glyphicon glyphicon-trash'></span></a></td>"
+        + "</tr>";
+        $('table #tbody').append(rows);
+        $('.entry-form input').val("");
+        updateTotal();
+        $("#txtItemCode").focus();
+    }
+    function updateTotal() {
+        $("#txtTotalQty").val(sumColumn(5));
+    }
+
+    $('#txtExpDelDate').datepicker({
+        dateFormat: 'yy-mm-dd',
+        minDate: 0
+    });
+
+    function validate() {
+        var isValid = true;
+        var table = $("table #tbody");
+        var barcode = $("#txtProductCode").val();
+        table.find('tr').each(function (i) {
+            var tableValue = $(this).find('td.code').text();
+            if (tableValue == barcode) {
+                alert("This Item Already Exist");
+                isValid = false;
+                $("#txtProductCode").focus();
+            }
+        });
+        if ($('#txtProductCode').val() == '') { alert("Please add an Item."); isValid = false; $("#txtProductCode").focus(); }
+        if ($('#txtExpDelDate').val() == '') { alert("Please add an Expected Delivery Date."); isValid = false; $("#txtExpDelDate").focus(); }
+        if ($('#txtDetail').val() == '') { $('#txtDetail').val('N/A'); }
+        return isValid;
+    }
+    //function deleterow() {
+    //    document.getElementById("tbody").deleteRow(0);
+    //}
+
+    $("table #tbody").on("click", "a.deleteRow", function (event) {
+        event.preventDefault();
+        $(this).closest('tr').remove();
+        $(function () {
+            //updateTotal()
+        });
+        return false;
+    });
+    function Save() {
+        var valid = validation();
+        if (valid == true) {
+            var vouchers = [];
+            var table = $('table #tbody');
+            table.find('tr').each(function () {
+                var $tds = $(this).find('td'),
+                    tCode = $tds.eq(0).text(),
+                    tName = $tds.eq(1).text(),
+                    tDetail = $tds.eq(2).text(),
+                    tUnit = $tds.eq(3).text(),
+                    tQty = $tds.eq(4).text(),
+                    tExDlDate = $tds.eq(5).text();
+                var voucher = {
+                    ReqNo: $("#txtReqNo").val(),
+                    ReqDate: $("#txtReqDate").val(),
+                    ReqFrom: $("#txtReqFrom").val(),
+                    Note: $("#txtNote").val(),
+                    TotalQty: $("#txtTotalQty").val(),
+                    ProductCode: tCode,
+                    ProductName: tName,
+                    Details: tDetail,
+                    ReqQty: tQty,
+                    Unit: tUnit,
+                    ExDlDate: tExDlDate,
+                };
+                vouchers.push(voucher);
+            });
+            var json = { _aModel: vouchers };
+            //console.log(json);
+            //return false;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Save", "InvPurchaseRequisition")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+                    if (data = 'Save Successful') {
+                        alert(data);
+                        location.reload(true);
+                    } else { alert(data); }
+                }
+
+            });
+            return false;
+        }
+        else {
+            alert("Please fill required field");
+        }
+        return false;
+    }
+
+    function validation() {
+        var isValid = true;
+        if ($('#tbody').html() == '') { alert('Please add an item to table grid.'); isValid = false; }
+        if ($("#txtNote").val() == '') { $('#txtNote').val("N/A"); }
+        if ($("#txtReqDate").val() == '') { alert('Please add Req.date'); isValid = false; }
+        return isValid;
+    }
+</script>
+
+

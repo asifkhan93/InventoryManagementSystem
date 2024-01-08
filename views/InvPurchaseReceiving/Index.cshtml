@@ -1,0 +1,605 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Purchase Receiving Form</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    <label class="col-sm-2 " for="txtGrnNo">GRN No.</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="txtGrnNo" disabled value="G21XXXXXX" />
+                      
+                    </div>
+
+                    <label class="col-sm-2 control-label" for="txtGrnDate"> GRN Date</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control datepicker" id="txtGrnDate" maxlength="100" />
+                    </div>
+                    <label class="col-sm-2 control-label" for="txtInvoiceNo">Invoice No.</label>
+
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="txtInvoiceNo" disabled value="I21XXXXXX" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 " for="txtSupplierName">Supplier Name</label>
+
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="txtSupplierName" />
+      
+                    </div>
+
+                    <label class="col-sm-2 " for="txtInvoiceDate">Invoice Date</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control datepicker" id="txtInvoiceDate" maxlength="100" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 " for="txtPoNo">PO No.</label>
+
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="txtPoNo" />
+                    </div>
+
+                    <label class="col-sm-2 " for="txtPoDate"> PoDate</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control datepicker" id="txtPoDate" maxlength="100" disabled/>
+                    </div>
+                </div>
+                <div class="form-group " >
+                    <div class="form-group ">
+                        <table class="table entry-form">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-1">ProductId</th>
+                                    <th class="col-sm-1">Product Name</th>
+                                    <th class="col-sm-1">Unit</th>
+                                    <th class="col-sm-2">Category</th>
+                                    <th class="col-sm-1">Price</th>
+                                    <th class="col-sm-1">Quantity</th>
+                                    <th class="col-sm-1">Total</th>
+                                    <th class="col-sm-1">VAT</th>
+                                    <th class="col-sm-1">VAT Type</th>
+                                    <th class="col-sm-1">VAT Amount</th>
+                                    <th class="col-sm-1">Discount</th>
+                                    <th class="col-sm-1">Discount Type</th>
+                                    <th class="col-sm-1">Discount Amount</th>
+                                    <th class="col-sm-1">Net Price</th>
+                                    <th class="col-sm-1">Batch No.</th>
+                                    <th class="col-sm-1">ExpiredDate</th>
+                                    <th class="col-sm-1">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="col-sm-1">
+                                        <input class="form-control" id="txtProductCode" type="text" tabindex="6">
+                                    </td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtProductName" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtUnit" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtProductCategory" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtPrice" type="text"></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtQuantity" type="text"></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtTotal" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtVat" type="text"></td>
+                                    <td class="col-sm-1">
+                                        <select class="form-control" id="txtVatType">
+                                            <option value="0">---Select---</option>
+                                            <option value="Tk.">Tk.</option>
+                                            <option value="%">%</option>
+                                        </select>
+                                    </td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtVatAmount" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtDiscount" type="text"></td>
+                                    <td class="col-sm-1">
+                                        <select class="form-control" id="txtDiscountType">
+                                            <option value="0">---Select---</option>
+                                            <option value="Tk.">Tk.</option>
+                                            <option value="%">%</option>
+                                        </select>
+                                    </td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtDiscountAmount" type="text"></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtNetPrice" type="text" disabled></td>
+                                    <td class="col-sm-1"><input class="form-control" id="txtBatchNo" type="text"></td>
+                                    <td class="col-sm-1"><input class="form-control datepicker" id="txtExpiredDate" type="text" tabindex="10" autocomplete="off"></td>
+                                    <td><button type="button" class="btn btn-sm btn-blue" id="btnAdd" onclick="Add()">Add</button></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead>
+
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="txtTotalQty">Total Quantity</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" id="txtTotalQty" />
+                    </div>
+                    <label class="col-sm-1 control-label" for="txtTotalPrice">Total Price</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control " id="txtTotalPrice" />
+                    </div>
+                    <label class="col-sm-1 control-label" for="txtTotalVat">Total Vat</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control " id="txtTotalVat" />
+                    </div>
+                    <label class="col-sm-1 control-label" for="txtTotalDiscount">Total Discount</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control " id="txtTotalDiscount" />
+                    </div>
+                    <label class="col-sm-1 control-label" for="txtTotalNetPrice">Total Net</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" id="txtTotalNetPrice" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="txtNote">Note</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control " id="txtNote" />
+                    </div>
+
+                </div>
+                <div class="form-group text-center">
+                    <input type="button" class="btn btn-sm btn-success" id="btnSave" value="Save" onclick="Save()" />
+                    <button type="button" class="btn btn-sm btn-info" id="invList">Purchase Receiving Form lists </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row list-area">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <input type="text" id="dataTableSearch" class="form-control" placeholder="Search" />
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped table-hover" id="table-example"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).on('keyup', '#dataTableSearch', function () {
+        loadData();
+    });
+    function loadData() {
+        $("#table-example").DataTable({
+            searching: false,
+            destroy: true,
+            bAutoWidth: false,
+            lengthChange: false,
+            "ajax": {
+                url: '@Url.Action("GetInvList", "InvPurchaseReceiving")',
+                type: "GET",
+                datatype: "json",
+                data: { 'param': 0, 'searchString': $('#dataTableSearch').val() },
+            },
+            "columns": [
+                { "data": "GrnNo", "title": "GrnNo" },
+                { "data": "GrnDate", "title": "GrnDate", "render": function (data) { return (window.ToJavaScriptDate(data)); } },
+                { "data": "InvoiceNo", "title": "InvoiceNo" },
+                { "data": "InvoiceDate", "title": "InvoiceDate", "render": function (data) { return (window.ToJavaScriptDate(data)); } },
+                { "data": "PoNo", "title": "PoNo" },
+                { "data": "PoDate", "title": "PoDate", "render": function (data) { return (window.ToJavaScriptDate(data)); } },
+                { "data": "SupplierName", "title": "SupplierName" },
+                { "data": "Note", "title": "Note" },
+
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return GetInvoicePrint(\"" + data.GrnNo + "\",\"" + ToJavaScriptDate(data.GrnDate) + "\")'><span class='glyphicon glyphicon-print'></span></a>";
+                    }, "title": "Print"
+                },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return GetSingleInvDetails(\"" + data.GrnNo + "\",\"" + ToJavaScriptDate(data.GrnDate) + "\")'><span class='glyphicon glyphicon-edit'></span></a>";
+                    }, "title": "Edit", visible: true
+                },
+                {
+                    "data": function (data, type, dataToSet) {
+                        return "<a href='javascript:;' onclick='return Delete(\"" + data.GrnNo + "\")'><span class='glyphicon glyphicon-trash'></span></a>";
+                    }, "title": "X", visible: true
+                }
+            ],
+        });
+    }
+
+    function GetSingleInvDetails(GrnNo, GrnDate) {
+        $.ajax({
+            url: '@Url.Action("GetGrnList", "InvPurchaseReceiving")',
+            type: "GET",
+            datatype: "json",
+            data: { 'param': 0, 'searchstring': GrnNo, 'category': GrnDate },
+            success: function (data) {
+                console.log(data);
+                //$('#txtId').val(data.data[0].Id),
+                $('#txtGrnNo').val(data.data[0].GrnNo).attr('disabled', true),
+                $('#txtPoNo').val(data.data[0].PoNo).attr('disabled', true), 
+                $('#txtInvoiceNo').val(data.data[0].InvoiceNo).attr('disabled', true),
+                $('#txtSupplierName').val(data.data[0].SupplierName).attr('disabled', true),
+                $('#txtGrnDate').val(ToJavaScriptDate(data.data[0].GrnDate)).attr('disabled', true),
+                $('#txtPoDate').val(ToJavaScriptDate(data.data[0].PoDate)).attr('disabled', true),
+                $('#txtInvoiceDate').val(ToJavaScriptDate(data.data[0].InvoiceDate)).attr('disabled', true), 
+                $('#txtTotalQty').val(data.data[0].TotalQty),
+                $('#txtTotalPrice').val(data.data[0].TotalPrice),
+                $('#txtTotalVat').val(data.data[0].TotalVat),
+                $('#txtTotalDiscount').val(data.data[0].TotalDiscount),
+                $('#txtTotalNetPrice').val(data.data[0].TotalNetPrice),
+                $('#txtNote').val(data.data[0].Note),
+                $('#btnSave').val("Update");
+                Show();
+            },
+            error: function (errormessage) { alert(errormessage.responseText); }
+        });
+    }
+    function Show() {
+        $("table #tbody").empty();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetEditProductList", "InvPurchaseReceiving")',
+            dataType: "Json",
+            data: { 'param': 0, 'searchString': $("#txtGrnNo").val() },
+            success: function (data) {
+                $.each(data.data, function (key, item) {
+                    var rows = "<tr>"
+                        + "<td class='code col-sm-1'>" + item.ProductCode + "</td>"
+                        + "<td class='col-sm-1'>" + item.ProductName + "</td>"
+                        + "<td class='col-sm-1'>" + item.Unit + "</td>"
+                        + "<td class='col-sm-1'>" + item.ProductCategory + "</td>"
+                        + "<td class='col-sm-1'>" + item.Price + "</td>"
+                        + "<td class='col-sm-1'>" + item.Qty + "</td>"
+                        + "<td class='col-sm-1'>" + item.Total + "</td>"
+                        + "<td class='col-sm-1'>" + item.Vat + "</td>"
+                        + "<td class='col-sm-1'>" + item.VatType + "</td>"
+                        + "<td class='col-sm-1'>" + item.VatAmount + "</td>"
+                        + "<td class='col-sm-1'>" + item.Discount + "</td>"
+                        + "<td class='col-sm-1'>" + item.DiscountType + "</td>"
+                        + "<td class='col-sm-1'>" + item.DiscountAmount + "</td>"
+                        + "<td class='col-sm-1'>" + item.NetPrice + "</td>"
+                        + "<td class='col-sm-1'>" + item.BatchNo + "</td>"
+                        + "<td class='col-sm-1'>" + ToJavaScriptDate(item.ExpDate) + "</td>"
+                        + "<td class='col-sm-1'><a href='#' class='deleteRow' onclick = 'deleterow()'><span class='glyphicon glyphicon-trash'></span></a></td>"
+                        + "</tr>";
+                    $('table #tbody').append(rows);
+                });
+
+            }
+        });
+
+    }
+
+    function Delete(GrnNo) {
+        var r = confirm("Are You Sure!");
+        if (r == true) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteProduct", "InvPurchaseReceiving")',
+                dataType: "Json",
+                data: { 'param': param },
+                success: function (data) {
+                    alert(data);
+                    location.reload();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $('#txtSupplierName').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetSupplierList", "InvPurchaseReceiving")',
+                    dataType: "Json",
+                    data: { 'param': 0, 'searchString': $("#txtSupplierName").val() },
+                    success: function (data) {
+                        response(data.data.slice(0, 10));
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $("#txtSupplierName").val(ui.item.Name);
+                return false;
+            },
+            minLength: 2
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            if (ul.children().length === 0) {
+                $("<thead><tr><th>Supplier Name</th></tr></thead>").appendTo(ul);
+            }
+            var html = "<td>" + item.Name + "</td>";
+            return $("<tr></tr>").append(html).appendTo(ul);
+        };
+    })
+    $(document).ready(function () {
+        $('#txtPoNo').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetPoList", "InvPurchaseReceiving")',
+                    dataType: "Json",
+                    data: { 'param': $("#txtSupplierName").val(), 'searchString': $("#txtPoNo").val() },
+                    success: function (data) {
+                        response(data.data.slice(0, 10));
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $("#txtPoNo").val(ui.item.PoNo);
+                $("#txtPoDate").val(ToJavaScriptDate(ui.item.PoDate))
+
+                return false;
+            },
+            minLength: 2
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            if (ul.children().length === 0) {
+                $("<thead><tr><th>SupplierName</th><th>PoNo</th><th>PoDate</th></tr></thead>").appendTo(ul);
+            }
+            var html = "<td>" + item.SupplierName + "</td>";
+            html += "<td>" + item.PoNo + "</td>";
+            html += "<td>" + ToJavaScriptDate(item.PoDate) + "</td>";
+            return $("<tr></tr>").append(html).appendTo(ul);
+        };
+    })
+
+    $(document).ready(function () {
+        $('#txtProductCode').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetProductList", "InvPurchaseReceiving")',
+                    dataType: "Json",
+                    data: { 'param': $("#txtPoNo").val(), 'searchString': $("#txtProductCode").val() },
+                    success: function (data) {
+                        response(data.data.slice(0, 10));
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $("#txtProductCode").val(ui.item.ProductCode);
+                $("#txtProductName").val(ui.item.ProductName);
+                $("#txtProductCategory").val(ui.item.ProductCategory);
+                $("#txtUnit").val(ui.item.Unit);
+                $("#txtQuantity").val(ui.item.Qty).focus();
+                $("#txtPrice").val(ui.item.Price);
+                return false;
+            },
+            minLength: 1
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            if (ul.children().length === 0) {
+                $("<thead><tr><th>ItemCode</th><th>Name</th><th>UnitName</th></tr></thead>").appendTo(ul);
+            }
+            var html = "<td>" + item.ProductCode + "</td>";
+            html += "<td>" + item.ProductName + "</td>";
+            html += "<td>" + item.Unit + "</td>";
+            return $("<tr></tr>").append(html).appendTo(ul);
+        };
+    })
+    function Add() {
+        var ss = validate();
+        if (ss == false) {
+            return false;
+        }
+        var rows = "<tr>"
+        + "<td class='code col-sm-1'>" + $("#txtProductCode").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtProductName").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtUnit").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtProductCategory").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtPrice").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtQuantity").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtTotal").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtVat").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtVatType").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtVatAmount").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtDiscount").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtDiscountType").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtDiscountAmount").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtNetPrice").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtBatchNo").val() + "</td>"
+        + "<td class='col-sm-1'>" + $("#txtExpiredDate").val() + "</td>"
+        + "<td class='col-sm-1'><a href='#' class='deleteRow' onclick = 'deleterow()'><span class='glyphicon glyphicon-trash'></span></a></td>"
+        + "</tr>";
+        $('table #tbody').append(rows);
+        $('.entry-form input').val("");
+        updateTotal();
+        $("#txtItemCode").focus();
+    }
+
+    $("table #tbody").on("click", "a.deleteRow", function (event) {
+        event.preventDefault();
+        $(this).closest('tr').remove();
+        $(function () {
+            //updateTotal()
+        });
+        return false;
+    });
+    function validate() {
+        var isValid = true;
+        var table = $("table #tbody");
+        var barcode = $("#txtProductCode").val();
+        table.find('tr').each(function (i) {
+            var tableValue = $(this).find('td.code').text();
+            if (tableValue == barcode) {
+                alert("This Item Already Exist");
+                isValid = false;
+                $("#txtProductCode").focus();
+            }
+        });
+        if ($('#txtExpiredDate').val() == '') { alert("Please add Expired Date."); isValid = false; $("#txtExpiredDate").focus(); }
+        // if ($('#txtOurStock').val() == '') { $('#txtOurStock').val('0'); }
+        // if ($('#txtDetail').val() == '') { $('#txtDetail').val('N/A'); }
+        return isValid;
+    }
+
+    $("#txtPrice, #txtQuantity").on('focusout', function () {
+        var price = $("#txtPrice").val();
+        var qty = $("#txtQuantity").val();
+        $("#txtTotal").val(price * qty);
+    })
+
+    $("#txtTotal, #txtVat,#txtVatType,#txtVatAmount, #txtDiscount, #txtDiscountType, #txtDiscountAmount,#txtNetPrice").on('keyup, change', function () {
+        var total = parseFloat($("#txtTotal").val());
+        var vat = parseFloat($("#txtVat").val());
+        var vatType = $("#txtVatType").val();
+        var discount = parseFloat($("#txtDiscount").val());
+        var discountType = $("#txtDiscountType").val();
+
+        if (vatType.valueOf() == "Tk.") {
+            $("#txtVatAmount").val(vat);
+        }
+        if (vatType.valueOf() == "%") {
+            $("#txtVatAmount").val((total * vat) / 100);
+        }
+        if (discountType.valueOf() == "Tk.") {
+            $("#txtDiscountAmount").val(discount);
+        }
+        if (discountType.valueOf() == "%") {
+            $("#txtDiscountAmount").val((total * discount) / 100);
+        }
+
+        var vatTotal = parseFloat($("#txtVatAmount").val());
+        var discountTotal = parseFloat($("#txtDiscountAmount").val());
+
+        $("#txtNetPrice").val((total + vatTotal) - discountTotal);
+    })
+
+    function updateTotal() {
+        $("#txtTotalPrice").val(sumColumn(7));
+        $("#txtTotalQty").val(sumColumn(6));
+        $("#txtTotalVat").val(sumColumn(10));
+        $("#txtTotalDiscount").val(sumColumn(13));
+        $("#txtTotalNetPrice").val(sumColumn(14));
+    }
+
+
+    function Save() {
+        var valid = validation();
+        if (valid == true) {
+            var vouchers = [];
+            var table = $('table #tbody');
+            table.find('tr').each(function () {
+                var $tds = $(this).find('td'),
+                    tCode = $tds.eq(0).text(),
+                    tName = $tds.eq(1).text(),
+                    tUnit = $tds.eq(2).text(),
+                    tCategory = $tds.eq(3).text(),
+                    tPrice = $tds.eq(4).text(),
+                    tQty = $tds.eq(5).text();
+                tTotal = $tds.eq(6).text();
+                tVat = $tds.eq(7).text();
+                tVatType = $tds.eq(8).text();
+                tVatAmount = $tds.eq(9).text();
+                tDiscount = $tds.eq(10).text();
+                tDiscountType = $tds.eq(11).text();
+                tDiscountAmount = $tds.eq(12).text();
+                tNet = $tds.eq(13).text();
+                tBatchNo = $tds.eq(14).text();
+                tExpDate = $tds.eq(15).text();
+
+
+                var voucher = {
+                    GrnNo: $("#txtGrnNo").val(),
+                    GrnDate: $("#txtGrnDate").val(),
+                    InvoiceNo: $("#txtInvoiceNo").val(),
+                    InvoiceDate: $("#txtInvoiceDate").val(),
+                    SupplierName: $("#txtSupplierName").val(),
+                    PoNo: $("#txtPoNo").val(),
+                    PoDate: $("#txtPoDate").val(),
+                    Note: $("#txtNote").val(),
+                    TotalQty: $("#txtTotalQty").val(),
+                    TotalPrice: $("#txtTotalPrice").val(),
+                    TotalVat: $("#txtTotalVat").val(),
+                    TotalDiscount: $("#txtTotalDiscount").val(),
+                    TotalNetPrice: $("#txtTotalNetPrice").val(),
+                    //CostCenter: $("#txtCostCenter").val(),
+                    ProductCode: tCode,
+                    ProductName: tName,
+                    Unit: tUnit,
+                    ProductCategory: tCategory,
+                    Price: tPrice,
+                    Qty: tQty,
+                    Total: tTotal,
+                    Vat: tVat,
+                    VatType: tVatType,
+                    VatAmount: tVatAmount,
+                    Discount: tDiscount,
+                    DiscountType: tDiscountType,
+                    DiscountAmount: tDiscountAmount,
+                    NetPrice: tNet,
+                    BatchNo: tBatchNo,
+                    ExpDate: tExpDate,
+                };
+                vouchers.push(voucher);
+            });
+            var json = { _aModel: vouchers };
+            //alert(JSON.stringify(json)); return false;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Save", "InvPurchaseReceiving")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+                    if (data = 'Save Successful') {
+                        alert(data);
+                        location.reload(true);
+                    } else { alert(data); }
+                }
+
+            });
+            return false;
+        }
+        else {
+            alert("Please fill required field");
+        }
+        return false;
+    }
+
+    function GetInvoicePrint(GrnNo, GrnDate) {
+        //console.log(parameter);
+        $.ajax({
+            url: '@Url.Action("GetReport", "InvPurchaseReceiving")',
+            type: "GET",
+            datatype: "json",
+            data: { 'GrnNo': GrnNo, 'GrnDate': GrnDate },
+            success: function (data) {
+                window.open("/Report/ReportViewer/ReportViewer.aspx", "_blank");
+            },
+        });
+    }
+    function validation() {
+        var isValid = true;
+        if ($('#txtGrnNo').val() == "") { $('#txtGrnNo').css('border-color', 'red'); isValid = false; }
+        else { $('#txtGrnNo').css('border-color', 'lightgrey'); }
+        if ($('#txtGrnDate').val() == "") { $('#txtGrnDate').css('border-color', 'red'); isValid = false; }
+        else { $('#txtGrnDate').css('border-color', 'lightgrey'); }
+        if ($('#txtInvoiceNo').val() == "") { $('#txtInvoiceNo').css('border-color', 'red'); isValid = false; }
+        else { $('#txtInvoiceNo').css('border-color', 'lightgrey'); }
+        if ($('#txtInvoicDate').val() == "") { $('#txtInvoicDate').css('border-color', 'red'); isValid = false; }
+        else { $('#txtInvoicDate').css('border-color', 'lightgrey'); }
+        if ($('#txtPoNo').val() == "") { $('#txtPoNo').css('border-color', 'red'); isValid = false; }
+        else { $('#txtPoNo').css('border-color', 'lightgrey'); }
+        if ($('#txtPoDate').val() == "") { $('#txtPoDate').css('border-color', 'red'); isValid = false; }
+        else { $('#txtPoDate').css('border-color', 'lightgrey'); }
+        if ($('#tbody').html() == '') { alert('Please add an item to table grid.'); isValid = false; }
+        if ($("#txtNote").val() == '') { $('#txtNote').val("N/A"); }
+        return isValid;
+    }
+</script>
